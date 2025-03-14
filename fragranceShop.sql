@@ -1,3 +1,6 @@
+-- Database
+CREATE DATABASE fragrance;
+
 -- Table 1: CUSTOMER
 CREATE TABLE CUSTOMER (
     customer_id INT NOT NULL AUTO_INCREMENT,
