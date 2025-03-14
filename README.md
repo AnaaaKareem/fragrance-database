@@ -8,8 +8,8 @@ The purpose is to design, create and populate a Database that manages online ord
 ![image](https://github.com/user-attachments/assets/e7c80278-14ee-451d-9351-ac6fdcc78bc3)
 
 ## Data Dictionary
-| **CUSTOMER** |
-|--------------|
+
+### CUSTOMER
 | **Key** | **Name** | **Data Type** | **Data Format** | **Constraints** | **Description** |
 | PK | customer_id | INT |  | NOT NULL, AUTO_INCREMENT | Used to uniquely identify a customer. |
 |  | first_name | VARCHAR(50) |  | NOT NULL | Customer’s first name. |
