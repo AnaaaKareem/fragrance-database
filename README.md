@@ -9,16 +9,19 @@ The purpose is to design, create and populate a Database that manages online ord
 
 ## Data Dictionary
 
-### CUSTOMER
-| **Key** | **Name** | **Data Type** | **Data Format** | **Constraints** | **Description** |
-| PK | customer_id | INT |  | NOT NULL, AUTO_INCREMENT | Used to uniquely identify a customer. |
-|  | first_name | VARCHAR(50) |  | NOT NULL | Customer’s first name. |
-|  | middle_name | VARCHAR(50) |  | NULLABLE | Customer’s middle name(s) if the customer chooses. |
-|  | last_name | VARCHAR(50) |  | NOT NULL | Customer’s last name. |
-|  | DOB | DATE | YYYY-MM-DD | NULLABLE | Customer's Date of Birth. |
-|  | gender | VARCHAR(6) |  | NOT NULL | Customer's gender (e.g., 'Male' or 'Female'). |
-|  | email_address | VARCHAR(100) |  | NOT NULL, UNIQUE | Customer’s email address. (Has to be unique) |
-|  | password | VARCHAR(255) |  | NOT NULL | Customer's password hashed for security. |
+## CUSTOMER
+| **Key** | **Name**         | **Data Type**  | **Data Format** | **Constraints**              | **Description**                                     |
+|---------|------------------|----------------|-----------------|------------------------------|-----------------------------------------------------|
+| PK      | customer_id      | INT            |                 | NOT NULL, AUTO_INCREMENT     | Used to uniquely identify a customer.              |
+|         | first_name       | VARCHAR(50)    |                 | NOT NULL                     | Customer’s first name.                             |
+|         | middle_name      | VARCHAR(50)    |                 | NULLABLE                     | Customer’s middle name(s) if the customer chooses. |
+|         | last_name        | VARCHAR(50)    |                 | NOT NULL                     | Customer’s last name.                              |
+|         | DOB              | DATE           | YYYY-MM-DD      | NULLABLE                     | Customer's Date of Birth.                          |
+|         | gender           | VARCHAR(6)     |                 | NOT NULL                     | Customer's gender (e.g., 'Male' or 'Female').      |
+|         | email_address    | VARCHAR(100)   |                 | NOT NULL, UNIQUE             | Customer’s email address (must be unique).         |
+|         | password         | VARCHAR(255)   |                 | NOT NULL                     | Customer's password (hashed for security).         |
+
+---
 
 | **PHONE NUMBERS** |
 |------------------|
