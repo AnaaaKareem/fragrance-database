@@ -4,10 +4,10 @@ from django.http import HttpResponse
 def home(request):
     return HttpResponse(render(request, 'store/homepage.html'))
 
-def signAccount(request):
+def signinout(request):
     return HttpResponse(render(request, 'store/account.html'))
 
-def accountInformation(request):
+def account(request):
     return HttpResponse(render(request, 'store/accountInfo.html'))
 
 def store(request):
