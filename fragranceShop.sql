@@ -167,7 +167,7 @@ CREATE TABLE IF NOT EXISTS ORDER_ITEMS (
     quantity INT NOT NULL DEFAULT 1,
     price DECIMAL(10,2) NOT NULL,
     PRIMARY KEY (order_id, product_id),
-    FOREIGN KEY (order_id) REFERENCES `ORDER`(order_id),
+    FOREIGN KEY (order_id) REFERENCES ORDERS(order_id),
     FOREIGN KEY (product_id) REFERENCES PRODUCTS(product_id)
 );
 
@@ -179,7 +179,7 @@ CREATE TABLE IF NOT EXISTS INSTALMENTS (
     pay_due DATE NULL,
     payment_status VARCHAR(50) NOT NULL DEFAULT 'Pending',
     PRIMARY KEY (order_id, instalment_number),
-    FOREIGN KEY (order_id) REFERENCES `ORDER`(order_id),
+    FOREIGN KEY (order_id) REFERENCES ORDERS(order_id),
     CHECK (payment_status IN ('Pending', 'Paid', 'Late'))
 );
 
@@ -199,7 +199,7 @@ CREATE TABLE IF NOT EXISTS PLACES (
     PRIMARY KEY (customer_id, product_id, order_id),
     FOREIGN KEY (customer_id) REFERENCES CUSTOMER(customer_id),
     FOREIGN KEY (product_id) REFERENCES PRODUCTS(product_id),
-    FOREIGN KEY (order_id) REFERENCES `ORDER`(order_id)
+    FOREIGN KEY (order_id) REFERENCES ORDERS(order_id)
 );
 
 -- Table 19: PRODUCT INVENTORY
