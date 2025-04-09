@@ -163,12 +163,12 @@ CREATE TABLE IF NOT EXISTS ORDERS (
 -- Table 15: ORDER ITEMS
 CREATE TABLE IF NOT EXISTS ORDER_ITEMS (
     order_id INT NOT NULL,
-    product_id INT NOT NULL,
+    product_selected INT NOT NULL,
     quantity INT NOT NULL DEFAULT 1,
     price DECIMAL(10,2) NOT NULL,
-    PRIMARY KEY (order_id, product_id),
+    PRIMARY KEY (order_id, product_selected),
     FOREIGN KEY (order_id) REFERENCES ORDERS(order_id),
-    FOREIGN KEY (product_id) REFERENCES PRODUCTS(product_id)
+    FOREIGN KEY (product_selected) REFERENCES PRODUCTS(product_id)
 );
 
 -- Table 16: INSTALMENTS
@@ -185,10 +185,11 @@ CREATE TABLE IF NOT EXISTS INSTALMENTS (
 
 -- Table 17: ORDER REF
 CREATE TABLE IF NOT EXISTS ORDER_REF (
-    product_id INT NOT NULL,
-    product INT NOT NULL,
-    PRIMARY KEY (product_id, product),
-    FOREIGN KEY (product_id) REFERENCES PRODUCTS(product_id)
+    order_id INT NOT NULL,
+    product_selected INT NOT NULL,
+    PRIMARY KEY (order_id, product_selected),
+    FOREIGN KEY (product_selected) REFERENCES PRODUCTS(product_id),
+    FOREIGN KEY (order_id) REFERENCES ORDER_ITEMS(order_id)
 );
 
 -- Table 18: PLACES
