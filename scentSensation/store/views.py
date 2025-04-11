@@ -1,17 +1,20 @@
 from django.shortcuts import render
-from django.http import HttpResponse
+from .models import *
 
 def home(request):
-    return HttpResponse(render(request, 'store/homepage.html'))
+    return render(request, 'store/homepage.html')
 
 def signinout(request):
-    return HttpResponse(render(request, 'store/account.html'))
+    return render(request, 'store/account.html')
 
 def account(request):
-    return HttpResponse(render(request, 'store/accountInfo.html'))
+    return render(request, 'store/accountInfo.html')
 
 def store(request):
-    return HttpResponse(render(request, 'store/storepage.html'))
+    products = Products.objects.all()
+    images = ProductImages.objects.all()
+    return render(request, 'store/storepage.html', {'products': products, 'images': images})
 
 def basket(request):
-    return HttpResponse(render(request, 'store/basket.html'))
+    basket = Basket.objects.all()
+    return render(request, 'store/basket.html',{'basket': basket})

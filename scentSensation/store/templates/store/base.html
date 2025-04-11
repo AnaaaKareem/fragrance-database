@@ -1,5 +1,4 @@
 {% load static %}
-<!doctype html>
 <html lang="en" xmlns="http://www.w3.org/1999/html">
 <head>
     <meta charset="UTF-8">
@@ -7,12 +6,12 @@
     <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     {% if title %}
-        <title>Django Blog - {{ title }}</title>
+        <title>Store - {{ title }}</title>
     {% else %}
-        <title>Django Blog</title>
+        <title>Store</title>
     {% endif %}
     <!-- favicon icon -->
-    <link rel="icon" type="image/x-icon" href="Pictures/Interation-Icons/Logo-Black.png">
+    <link rel="icon" type="image/x-icon" href="{% static 'store/Pictures/Interaction-Icons/Logo-Black.png' %}">
     <!-- Bootstrap CSS -->
     <link href="{% static 'store/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
     <!-- Bootstrap JavaScript bundle -->
@@ -27,8 +26,8 @@
     <nav class="navbar navbar-expand-lg navbar-dark bg-black fixed-top">
         <div class="container-fluid">
             <!--Logo-->
-            <a class="navbar-brand" href="Homepage.html">
-                <img src="Pictures/Interation-Icons/Logo-Black.png" style="filter: invert(100%); width: 40px; height: 40px" alt="logo">
+            <a class="navbar-brand" href="{% url 'homepage' %}">
+                <img src="{% static 'store/Pictures/Interaction-Icons/Logo-Black.png' %}" style="filter: invert(100%); width: 40px; height: 40px" alt="logo">
             </a>
             <!--Offcanvas toggle button-->
             <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar">
@@ -48,33 +47,33 @@
                             <span class="fw-bold d-none">Home</span>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="Homepage.html" data-bs-toggle="tooltip" title="Home">
+                            <a class="nav-link" href="{% url 'homepage' %}" data-bs-toggle="tooltip" title="Home">
                                 <div class="d-flex flex-column align-items-center">
-                                    <img src="Pictures/Interation-Icons/home.png" width="30px" height="30px" style="filter: invert(100%)" alt="Home">
+                                    <img src="{% static 'store/Pictures/Interaction-Icons/home.png' %}" width="30px" height="30px" style="filter: invert(100%)" alt="Home">
                                     <span class="fw-bold text-white">Home</span>
                                 </div>
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="product_view.html" data-bs-toggle="tooltip" title="Brands">
+                            <a class="nav-link" href="{% url 'store' %}" data-bs-toggle="tooltip" title="Brands">
                                 <div class="d-flex flex-column align-items-center">
-                                    <img src="Pictures/Interation-Icons/shop.png" width="30px" height="30px" style="filter: invert(100%)" alt="Shop">
+                                    <img src="{% static 'store/Pictures/Interaction-Icons/shop.png' %}" width="30px" height="30px" style="filter: invert(100%)" alt="Shop">
                                     <span class="fw-bold text-white">Shop</span>
                                 </div>
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="basket.html" data-bs-toggle="tooltip" title="Basket">
+                            <a class="nav-link" href="{% url 'basket' %}" data-bs-toggle="tooltip" title="Basket">
                                 <div class="d-flex flex-column align-items-center">
-                                    <img src="Pictures/Interation-Icons/basket.png" width="30px" height="30px" style="filter: invert(100%)" alt="Basket">
+                                    <img src="{% static 'store/Pictures/Interaction-Icons/basket.png' %}" width="30px" height="30px" style="filter: invert(100%)" alt="Basket">
                                     <span class="fw-bold text-white">Basket</span>
                                 </div>
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="account.html" data-bs-toggle="tooltip" title="Account">
+                            <a class="nav-link" href="{% url 'account' %}" data-bs-toggle="tooltip" title="Account">
                                 <div class="d-flex flex-column align-items-center">
-                                    <img src="Pictures/Interation-Icons/user.png" width="30px" height="30px" style="filter: invert(100%)" alt="Account">
+                                    <img src="{% static 'store/Pictures/Interaction-Icons/user.png' %}" width="30px" height="30px" style="filter: invert(100%)" alt="Account">
                                     <span class="fw-bold text-white">Account</span>
                                 </div>
                             </a>
