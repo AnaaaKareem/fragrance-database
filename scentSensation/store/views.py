@@ -1,14 +1,15 @@
+from django.contrib.auth import authenticate, login
+from django.contrib.auth.hashers import make_password
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from .models import *
-from django.contrib.auth.hashers import make_password
-from .forms import UserRegistrationForm
+from .forms import *
 import pymysql
 
 def home(request):
     return render(request, 'store/homepage.html')
 
-def signinout(request):
+def signup(request):
     if request.method == 'POST':
         form = UserRegistrationForm(request.POST)
         if form.is_valid():
@@ -69,7 +70,10 @@ def signinout(request):
     else:
         form = UserRegistrationForm()
 
-    return render(request, 'store/account.html', {'form': form})
+    return render(request, 'store/signup.html', {'form': form})
+
+def signin(request):
+    return render(request, 'store/signin.html')
 
 def account(request):
     return render(request, 'store/accountInfo.html')

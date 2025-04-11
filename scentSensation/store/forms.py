@@ -1,5 +1,8 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.forms import AuthenticationForm
+from crispy_forms.helper import FormHelper
+from crispy_forms.layout import Submit
 
 class UserRegistrationForm(UserCreationForm):
     first_name = forms.CharField(max_length=30, required=True)
@@ -19,9 +22,19 @@ class UserRegistrationForm(UserCreationForm):
     password1 = forms.CharField(label='Password', widget=forms.PasswordInput)
     password2 = forms.CharField(label='Confirm Password', widget=forms.PasswordInput)
 
-# class UserLoginForm(UserCreationForm):
-#     email = forms.EmailField(required=True)
-#
-#     class Meta:
-#         model = User
-#         fields = ['email', 'password']
+class UserLoginForm(AuthenticationForm):
+    email_address = forms.CharField(
+        max_length=150,
+        label="Email Address",
+        widget=forms.EmailInput(attrs={'placeholder': 'example@example.com'})
+    )
+    password = forms.CharField(
+        label='Password',
+        widget=forms.PasswordInput(attrs={'placeholder': '********'})
+    )
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.form_method = 'post'
+        self.helper.add_input(Submit('submit', 'Sign In'))
