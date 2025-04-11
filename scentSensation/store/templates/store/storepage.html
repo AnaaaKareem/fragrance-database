@@ -34,15 +34,16 @@
                 {% for product in products %}
                 <div class="col-md-4 mb-4">
                     <div class="card">
+                        {% for image in images %}
+                        {% if image %}
                         <div id="carouselExampleAutoplaying" class="carousel slide" data-bs-ride="carousel">
                             <div class="carousel-inner">
 
-                                {% for image in images %}
+
                                 <div class="carousel-item active">
-                                    <img src="{% image.image %}" class="d-block w-100"
-                                         alt="{% product.brand - product.product_name %}">
+                                    <img src="{{ image.image }}" class="d-block w-100"
+                                         alt="{{ product.brand }} - {{ product.product_name }}">
                                 </div>
-                                {% endfor %}
 
                             </div>
                             <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleAutoplaying" data-bs-slide="prev">
@@ -54,6 +55,8 @@
                                 <span class="visually-hidden">Next</span>
                             </button>
                         </div>
+                        {% endif %}
+                        {% endfor %}
 
                         <div class="card-body">
                             <h5 class="card-title">{{ product.product_name }}</h5>
