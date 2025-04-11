@@ -39,7 +39,7 @@ def signinout(request):
                     # Get customer_id
                     customer_id = cursor.lastrowid
                     # Get phone_numbers table
-                    phone_number = data.get('phone_number')
+                    phone_number = data.get('phone_numbers')
                     if phone_number:
                         phone_sql = "INSERT INTO phone_numbers (customer_id, phone_number) VALUES (%s, %s)"
                         cursor.execute(phone_sql, (customer_id, phone_number))
