@@ -86,7 +86,8 @@ def signin(request):
             if check_password(password, customer.password):  # Or use == if plaintext
                 # ✅ Manually start session
                 request.session['customer_id'] = customer.customer_id
-                request.session['customer_name'] = f"{customer.first_name} {customer.last_name}"
+                request.session['first_name'] = f"{customer.first_name}"
+                request.session['last_name'] = f"{customer.last_name}"
                 return redirect('homepage')
             else:
                 messages.error(request, 'Invalid email or password')

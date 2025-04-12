@@ -10,6 +10,14 @@
     {% else %}
         <title>Store</title>
     {% endif %}
+    <style>
+        .dropdown:hover > .dropdown-menu {
+        display: block;
+        }
+        .dropdown {
+            position: relative;
+        }
+    </style>
     <!-- favicon icon -->
     <link rel="icon" type="image/x-icon" href="{% static 'store/Pictures/Interaction-Icons/Logo-Black.png' %}">
     <!-- Bootstrap CSS -->
@@ -70,19 +78,32 @@
                                 </div>
                             </a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'signinAccount' %}" data-bs-toggle="tooltip" title="Account">
-                                <div class="d-flex flex-column align-items-center">
+                        <li class="nav-item nav-link">
+                            {% if request.session.first_name %}
+                            <div class="dropdown">
+                                <div class="d-flex flex-column align-items-center" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <img src="{% static 'store/Pictures/Interaction-Icons/user.png' %}" width="30px" height="30px" style="filter: invert(100%)" alt="Account">
+                                    <span class="fw-bold text-white">{{ request.session.first_name }}</span>
+                                </div>
+                                <ul class="dropdown-menu dropdown-menu-lg-start" role="menu" aria-labelledby="dropdownMenuButton">
+                                    <li><a class="dropdown-item" href="#">Account Info</a></li>
+                                    <li><a class="dropdown-item" href="#">Signout</a></li>
+                                </ul>
+                            </div>
+                            {% else %}
+                            <a href="{% url 'signinAccount' %}" data-bs-toggle="tooltip" title="Account">
+                            <div class="d-flex flex-column align-items-center">
                                     <img src="{% static 'store/Pictures/Interaction-Icons/user.png' %}" width="30px" height="30px" style="filter: invert(100%)" alt="Account">
                                     <span class="fw-bold text-white">
-                                        {% if request.session.customer_name %}
-                                        {{ request.session.customer_name }}
+                                        {% if request.session.first_name %}
+                                        {{ request.session.first_name }}
                                         {% else %}
                                             Account
                                         {% endif %}
                                     </span>
-                                </div>
+                            </div>
                             </a>
+                            {% endif %}
                         </li>
                     </ul>
                 </div>
