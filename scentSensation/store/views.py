@@ -1,6 +1,10 @@
+from datetime import timedelta
+
 from django.contrib.auth.hashers import make_password, check_password
 from django.shortcuts import render, redirect, get_object_or_404
 from django.core.paginator import Paginator
+from django.utils import timezone
+
 from .models import *
 from .forms import *
 import pymysql
@@ -60,6 +64,17 @@ def signup(request):
                             """
                             cursor.execute(address_sql, (
                                 customer_id, house, street_name, town_city, county, postcode, country
+                            ))
+                            customer_id = cursor.lastrowid
+                            member = data.get('membership')
+                        if member:
+                            member_sql = """
+                                INSERT INTO membership (
+                                    customer_id, membership_type, end_ren_date
+                                ) VALUES (%s, %s, %s)
+                            """
+                            cursor.execute(member_sql, (
+                                customer_id, member, timezone.now() + timedelta(days=30)
                             ))
                     connection.commit()
                     messages.success(request, "User registered successfully!")
