@@ -81,7 +81,6 @@ def signin(request):
     if request.method == 'POST':
         email = request.POST.get('username')
         password = request.POST.get('password')
-
         try:
             customer = Customer.objects.get(email_address=email)
             if check_password(password, customer.password):  # Or use == if plaintext
