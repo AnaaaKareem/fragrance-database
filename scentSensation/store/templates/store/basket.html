@@ -1,66 +1,71 @@
 {% extends "store/base_1.html" %}
 {% block content %}
 
-    <br>
+<br>
 
-    <div class="container mt-5">
-        <div class="row">
-            <!-- Product List (Left Side) -->
-            <div class="col-md-8">
-                {% if items %}
-                    {% for item in items %}
-                        <div class="card mb-3">
-                            <div class="row g-0">
-                                <!-- Product Image (Left) -->
-                                <div class="col-md-3 d-flex align-items-center justify-content-center">
-                                    {% if item.product.image %}
-                                        <img src="{{ item.product.image.url }}" alt="{{ item.product.product_name }}" class="img-fluid" style="max-width: 100px;">
-                                    {% endif %}
+<div class="container mt-5">
+    <div class="row">
+        <!-- Product List (Left Side) -->
+        <div class="col-md-8">
+            {% for item in items %}
+                <div class="card mb-3">
+                    <div class="row g-0">
+                        <!-- Product Image (Left) -->
+                        <div class="col-md-3 d-flex align-items-center justify-content-center">
+                            {% if item.image %}
+                                <img src="{{ item.image.image }}" alt="{{ item.product.product_name }}" class="img-fluid" style="max-width: 100px;">
+                            {% endif %}
+                        </div>
+
+                        <!-- Product Information (Right) -->
+                        <div class="col-md-9">
+                            <div class="card-body">
+                                <h5 class="card-title">{{ item.product.brand }} - {{ item.product.product_name }}</h5>
+
+                                {% if item.personal %}
+                                    <p class="mb-1"><strong>Size:</strong> {{ item.personal.size }}</p>
+                                    <p class="mb-1"><strong>Fragrance Family:</strong> {{ item.personal.fragrance_family }}</p>
+                                    <p class="mb-1"><strong>Strength:</strong> {{ item.personal.strength }}</p>
+                                {% elif item.home %}
+                                    <p class="mb-1"><strong>Type:</strong> {{ item.home.product_type }}</p>
+                                    <p class="mb-1"><strong>Bundle:</strong> {{ item.home.bundle }}</p>
+                                {% endif %}
+
+                                <!-- Quantity and Price -->
+                                <div class="d-flex align-items-center mt-2">
+                                    <input type="number" class="form-control me-2" style="width: 60px;"
+                                           value="{{ item.quantity }}" min="1">
+                                    <span class="fw-bold me-2">${{ item.product.price }}</span>
                                 </div>
 
-                                <!-- Product Information (Right) -->
-                                <div class="col-md-9">
-                                    <div class="card-body">
-                                        <h5 class="card-title">{{ item.product.brand }} - {{ item.product.product_name }}</h5>
-                                        <!-- Quantity and Price -->
-                                        <div class="d-flex align-items-center">
-                                            <input type="number" class="form-control me-2" style="width: 60px;"
-                                                   value="{{ item.quantity }}" min="1">
-                                            <span class="fw-bold me-2">${{ item.product.price }}</span>
-                                        </div>
-                                        <!-- Delete Button -->
-                                        <form action="{% url 'delete_from_basket' item.product.product_id %}" method="post">
-                                            {% csrf_token %}
-                                            <button type="submit" class="btn btn-danger btn-sm mt-2">Delete</button>
-                                        </form>
-                                    </div>
-                                </div>
+                                <!-- Delete Button -->
+                                <form action="{% url 'delete_from_basket' item.product.product_id %}" method="post">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-danger btn-sm mt-2">Delete</button>
+                                </form>
                             </div>
                         </div>
-                    {% endfor %}
-                {% else %}
-                    <div class="alert alert-info" role="alert">
-                        No Fragrances in Basket At The Moment.
                     </div>
-                {% endif %}
-            </div>
+                </div>
+            {% endfor %}
+        </div>
 
-            <!-- Order Summary (Right Side) -->
-            <div class="col-md-4">
-                <div class="card mb-3">
-                    <div class="card-body">
-                        <h3 class="card-title">Order Summary</h3>
-                        <h4 class="card-text">Price: ${{ subtotal }}</h4>
-                        <h5 class="card-text">Discount ({{ discount_rate }}%): ${{ discount }}</h5>
-                        <h5 class="card-text">Total: ${{ total }}</h5>
-                        <hr>
-                        <a href="" class="btn btn-primary w-100">Checkout</a>
-                    </div>
+        <!-- Order Summary (Right Side) -->
+        <div class="col-md-4">
+            <div class="card mb-3">
+                <div class="card-body">
+                    <h3 class="card-title">Order Summary</h3>
+                    <h4 class="card-text">Price: ${{ subtotal }}</h4>
+                    <h5 class="card-text">Discount ({{ discount_rate }}%): ${{ discount }}</h5>
+                    <h5 class="card-text">Total: ${{ total }}</h5>
+                    <hr>
+                    <a href="" class="btn btn-primary w-100">Checkout</a>
                 </div>
             </div>
         </div>
     </div>
+</div>
 
-    <br>
+<br>
 
 {% endblock content %}

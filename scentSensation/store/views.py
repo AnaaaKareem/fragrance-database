@@ -181,18 +181,50 @@ def basket(request):
     if not customer_id:
         return redirect('signin')
 
-    items = Basket.objects.filter(customer_id=customer_id)
-    subtotal = sum(item.product.price * item.quantity for item in items)
-    discount_rate = 0  # Define your discount logic
+    items = Basket.objects.select_related('product').filter(customer_id=customer_id)
+
+    item_list = []
+    for item in items:
+        product = item.product
+
+    basket_items = Basket.objects.filter(customer_id=customer_id)
+
+    items = []
+    subtotal = 0
+
+    for item in basket_items:
+        product = Products.objects.filter(product_id=item.product_id).first()
+        image = ProductImages.objects.filter(product_id=item.product_id).first()
+        personal = PersonalFragrances.objects.filter(product_id=item.product_id).first()
+        home = HomeFragrances.objects.filter(product_id=item.product_id).first()
+
+        total_price = product.price * item.quantity
+        subtotal += total_price
+
+        items.append({
+            'product': product,
+            'quantity': item.quantity,
+            'image': image,
+            'personal': personal,
+            'home': home,
+        })
+
+    # Get membership discount
+    discount_rate = 0
+    membership = Membership.objects.filter(customer_id=customer_id).select_related('membership_type').first()
+    if membership and membership.membership_type:
+        discount_rate = membership.membership_type.discount_rate
+
     discount = subtotal * (discount_rate / 100)
     total = subtotal - discount
 
+    # Use context to send data
     context = {
         'items': items,
-        'subtotal': subtotal,
-        'discount_rate': discount_rate,
-        'discount': discount,
-        'total': total
+        'subtotal': round(subtotal, 2),
+        'discount': round(discount, 2),
+        'total': round(total, 2),
+        'discount_rate': discount_rate
     }
 
     return render(request, 'store/basket.html', context)
