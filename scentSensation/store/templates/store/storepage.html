@@ -8,22 +8,21 @@
             <div class="card p-3">
                 <h4>Filter</h4>
                 <hr>
-                <form>
-                    <!-- Category Filter -->
+                <form method="get">
                     <div class="mb-3">
                         <label class="form-label">Category</label>
                         <div class="form-check">
-                            <input class="form-check-input" type="checkbox" value="" id="category1">
+                            <input class="form-check-input" type="checkbox" name="category" value="Personal Fragrances" id="category1"
                             <label class="form-check-label" for="category1">Personal Fragrances</label>
                         </div>
                         <div class="form-check">
-                            <input class="form-check-input" type="checkbox" value="" id="category2">
+                            <input class="form-check-input" type="checkbox" name="category" value="Home Fragrances" id="category2"
                             <label class="form-check-label" for="category2">Home Fragrances</label>
                         </div>
                     </div>
-                    <!-- Apply Filters Button -->
                     <button type="submit" class="btn btn-primary w-100">Apply Filters</button>
                 </form>
+
             </div>
         </div>
 
@@ -33,26 +32,38 @@
                 {% for product in products %}
                 <div class="col-md-4 mb-4">
                     <div class="card">
-                        {% for image in images %}
-                        {% if image %}
-                        <div id="carouselExampleAutoplaying" class="carousel slide" data-bs-ride="carousel">
+                    {% with product_images=product.product_images.all %}
+                        {% if product_images %}
+                        <div id="carousel{{ product.product_id }}" class="carousel slide" data-bs-ride="carousel">
                             <div class="carousel-inner">
-                                <div class="carousel-item active">
-                                    <img src="{{ image.image }}" class="d-block w-100"
-                                         alt="{{ product.brand }} - {{ product.product_name }}">
+                                {% for image in product_images %}
+                                <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                                    <img src="{{ image.image }}"
+                                         class="d-block w-100"
+                                         alt="{{ product.product_name }}"
+                                         style="height: 300px; object-fit: cover;">
                                 </div>
+                                {% endfor %}
                             </div>
-                            <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleAutoplaying" data-bs-slide="prev">
+                            {% if product_images.count > 1 %}
+                            <button class="carousel-control-prev"
+                                    type="button"
+                                    data-bs-target="#carousel{{ product.product_id }}"
+                                    data-bs-slide="prev">
                                 <span class="carousel-control-prev-icon" aria-hidden="true"></span>
                                 <span class="visually-hidden">Previous</span>
                             </button>
-                            <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleAutoplaying" data-bs-slide="next">
+                            <button class="carousel-control-next"
+                                    type="button"
+                                    data-bs-target="#carousel{{ product.product_id }}"
+                                    data-bs-slide="next">
                                 <span class="carousel-control-next-icon" aria-hidden="true"></span>
                                 <span class="visually-hidden">Next</span>
                             </button>
+                            {% endif %}
                         </div>
                         {% endif %}
-                        {% endfor %}
+                        {% endwith %}
 
                         <div class="card-body">
                             <h5 class="card-title">{{ product.product_name }}</h5>
@@ -74,26 +85,26 @@
             </div>
         </div>
 
-{% if is_paginated %}
-
+        {% if is_paginated %}
+<div class="d-flex flex-wrap justify-content-center"> <!-- Flex container added -->
     {% if page_obj.has_previous %}
-        <a class="btn btn-outline-info mb-4" href="?page=1">First</a>
-        <a class="btn btn-outline-info mb-4" href="?page={{ page_obj.previous_page_number }}">Previous</a>
+        <a class="btn btn-outline-info mx-1 mb-2" href="?page=1">First</a>
+        <a class="btn btn-outline-info mx-1 mb-2" href="?page={{ page_obj.previous_page_number }}">Previous</a>
     {% endif %}
 
     {% for num in page_obj.paginator.page_range %}
         {% if page_obj.number == num %}
-            <a class="btn btn-info mb-4" href="?page={{ num }}">{{ num }}</a>
+            <a class="btn btn-info mx-1 mb-2" href="?page={{ num }}">{{ num }}</a>
         {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
-            <a class="btn btn-outline-info mb-4" href="?page={{ num }}">{{ num }}</a>
+            <a class="btn btn-outline-info mx-1 mb-2" href="?page={{ num }}">{{ num }}</a>
         {% endif %}
     {% endfor %}
 
     {% if page_obj.has_next %}
-        <a class="btn btn-outline-info mb-4" href="?page={{ page_obj.next_page_number }}">Next</a>
-        <a class="btn btn-outline-info mb-4" href="?page={{ page_obj.paginator.num_pages }}">Last</a>
+        <a class="btn btn-outline-info mx-1 mb-2" href="?page={{ page_obj.next_page_number }}">Next</a>
+        <a class="btn btn-outline-info mx-1 mb-2" href="?page={{ page_obj.paginator.num_pages }}">Last</a>
     {% endif %}
-
+</div>
 {% endif %}
 
 </div>
