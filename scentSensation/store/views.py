@@ -1,6 +1,6 @@
 from django.contrib.auth.hashers import make_password, check_password
 from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib import messages
+from django.core.paginator import Paginator
 from .models import *
 from .forms import *
 import pymysql
@@ -121,8 +121,13 @@ def signout(request):
     request.session.flush()
     return redirect('signinAccount')
 
-def account(request):
 
+from django.shortcuts import render, redirect
+from django.contrib import messages
+
+
+def account(request):
+    # Retrieve current session data
     first_name = request.session.get('first_name')
     middle_name = request.session.get('middle_name', '')
     last_name = request.session.get('last_name')
@@ -135,7 +140,41 @@ def account(request):
     county = request.session.get('county')
     postcode = request.session.get('postcode')
     country = request.session.get('country')
-    phone_numbers = request.session.get('phone_number', [])
+
+    if request.method == 'POST':
+        # Update session data with the submitted form values
+        first_name = request.POST.get('first_name', first_name)
+        middle_name = request.POST.get('middle_name', middle_name)
+        last_name = request.POST.get('last_name', last_name)
+        email_address = request.POST.get('email_address', email_address)
+        DOB = request.POST.get('DOB', DOB)
+        gender = request.POST.get('gender', gender)
+        house = request.POST.get('house', house)
+        street_name = request.POST.get('street_name', street_name)
+        town_city = request.POST.get('town_city', town_city)
+        county = request.POST.get('county', county)
+        postcode = request.POST.get('postcode', postcode)
+        country = request.POST.get('country', country)
+
+        # Save updated session data
+        request.session['first_name'] = first_name
+        request.session['middle_name'] = middle_name
+        request.session['last_name'] = last_name
+        request.session['email_address'] = email_address
+        request.session['DOB'] = DOB
+        request.session['gender'] = gender
+        request.session['house'] = house
+        request.session['street_name'] = street_name
+        request.session['town_city'] = town_city
+        request.session['county'] = county
+        request.session['postcode'] = postcode
+        request.session['country'] = country
+
+        # Show success message
+        messages.success(request, "Your account information has been updated successfully.")
+
+        return redirect('account')  # Redirect to the same page after successful update
+
     context = {
         'first_name': first_name,
         'middle_name': middle_name,
@@ -148,15 +187,19 @@ def account(request):
         'town_city': town_city,
         'county': county,
         'postcode': postcode,
-        'country': country,
-        'phone_numbers': phone_numbers,
+        'country': country
     }
 
     return render(request, 'store/accountInfo.html', context)
 
+
 def store(request):
-    products = Products.objects.all()
+    all_products = Products.objects.all()
     images = ProductImages.objects.all()
+
+    paginator = Paginator(all_products, 6)
+    page_number = request.GET.get('page', 1)
+    page_obj = paginator.get_page(page_number)
 
     if request.method == "POST" and "add_basket" in request.POST:
         product_id = request.POST.get("product_id")
@@ -164,17 +207,24 @@ def store(request):
         customer_id = request.session['customer_id']
 
         basket_item, created = Basket.objects.get_or_create(
-            customer_id=customer_id, product_id=product_id,
+            customer_id=customer_id,
+            product_id=product_id,
             defaults={'quantity': quantity}
         )
 
-        if not created:  # If item already exists, update quantity
+        if not created:
             basket_item.quantity += quantity
             basket_item.save()
 
         return redirect('store')
 
-    return render(request, 'store/storepage.html', {'products': products, 'images': images})
+    context = {
+        'products': page_obj,            # This contains the paginated products
+        'images': images,
+        'page_obj': page_obj,
+        'is_paginated': page_obj.has_other_pages()
+    }
+    return render(request, 'store/storepage.html', context)
 
 def basket(request):
     customer_id = request.session.get('customer_id')
@@ -240,18 +290,16 @@ def delete_from_basket(request, product_id):
     return redirect('basket')
 
 
-def update_basket(request, product_id):
+def checkout(request):
     customer_id = request.session.get('customer_id')
-    if not customer_id:
-        return redirect('signin')
+    basket_items = Basket.objects.filter(customer=customer_id)
 
-    if request.method == 'POST':
-        quantity = int(request.POST.get('quantity', 1))
-        basket_item = Basket.objects.filter(customer_id=customer_id, product_id=product_id).first()
-        if basket_item:
-            if quantity > 0:
-                basket_item.quantity = quantity
-                basket_item.save()
-            else:
-                basket_item.delete()
+    if not basket_items.exists():
+        messages.error(request, "Your basket is empty.")
+        return redirect('basket')
+
+    # Step 1: Delete the basket items
+    basket_items.delete()
+
+    messages.success(request, "Your basket has been cleared and order removed if in progress.")
     return redirect('basket')

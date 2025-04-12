@@ -222,7 +222,7 @@ class Places(models.Model):
 
 class ProductImages(models.Model):
     objects = models.Manager()
-    image_id = models.AutoField(primary_key=True, )
+    image_id = models.AutoField(primary_key=True)
     product = models.ForeignKey('Products', models.DO_NOTHING, related_name='product_images')
     image = models.TextField()
 
