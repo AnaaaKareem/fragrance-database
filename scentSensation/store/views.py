@@ -1,7 +1,5 @@
-from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.models import AnonymousUser
 from django.contrib.auth.hashers import make_password, check_password
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from .models import *
 from .forms import *
@@ -76,13 +74,6 @@ def signup(request):
         form = UserRegistrationForm()
 
     return render(request, 'store/signup.html', {'form': form})
-
-
-from django.contrib.auth.hashers import check_password
-from django.shortcuts import render, redirect
-from django.contrib import messages
-from .models import Customer
-
 
 def signin(request):
     if request.method == 'POST':
@@ -166,8 +157,55 @@ def account(request):
 def store(request):
     products = Products.objects.all()
     images = ProductImages.objects.all()
+
+    if request.method == "POST" and "add_basket" in request.POST:
+        product_id = request.POST.get("product_id")
+        quantity = int(request.POST.get("quantity", 1))
+        customer_id = request.session['customer_id']
+
+        basket_item, created = Basket.objects.get_or_create(
+            customer_id=customer_id, product_id=product_id,
+            defaults={'quantity': quantity}
+        )
+
+        if not created:  # If item already exists, update quantity
+            basket_item.quantity += quantity
+            basket_item.save()
+
+        return redirect('store')
+
     return render(request, 'store/storepage.html', {'products': products, 'images': images})
 
 def basket(request):
-    basket = Basket.objects.all()
-    return render(request, 'store/basket.html',{'basket': basket})
+    customer_id = request.session.get('customer_id')
+    if not customer_id:
+        return redirect('signin')
+
+    basket_items = Basket.objects.filter(customer=customer_id).select_related('product')
+    customer = Customer.objects.get(customer_id=customer_id)
+    membership = Membership.objects.filter(customer=customer).first()
+    discount_rate = membership.discount_rate.discount_rate if membership else 0
+
+    subtotal = sum(item.product.price * item.quantity for item in basket_items)
+    discount = subtotal * discount_rate
+    total = subtotal - discount
+
+    context = {
+        'items': basket_items,
+        'subtotal': subtotal,
+        'discount': discount,
+        'total': total,
+        'discount_rate': discount_rate * 100  # Convert to percentage
+    }
+
+    return render(request, 'store/basket.html',context)
+
+
+def delete_from_basket(request, product_id):
+    customer_id = request.session.get('customer_id')
+    if not customer_id:
+        return redirect('signin')
+
+    basket_item = get_object_or_404(Basket, customer_id=customer_id, product_id=product_id)
+    basket_item.delete()
+    return redirect('basket')

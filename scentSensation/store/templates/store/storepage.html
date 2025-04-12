@@ -38,13 +38,10 @@
                         {% if image %}
                         <div id="carouselExampleAutoplaying" class="carousel slide" data-bs-ride="carousel">
                             <div class="carousel-inner">
-
-
                                 <div class="carousel-item active">
                                     <img src="{{ image.image }}" class="d-block w-100"
                                          alt="{{ product.brand }} - {{ product.product_name }}">
                                 </div>
-
                             </div>
                             <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleAutoplaying" data-bs-slide="prev">
                                 <span class="carousel-control-prev-icon" aria-hidden="true"></span>
@@ -63,10 +60,14 @@
                             <h6 class="card-subtitle mb-2 text-muted">{{ product.brand }}</h6>
                             <p class="card-text">{{ product.description }}</p>
                             <p class="h5">£{{ product.price }}</p>
-                            <div class="d-flex align-items-center">
-                                <a href="#" class="btn btn-primary me-2">Add to Cart</a>
-                                <input type="number" class="form-control" style="width: 60px;" value="1" min="1">
-                            </div>
+                            <form method="post">
+                                {% csrf_token %}
+                                <input type="hidden" name="product_id" value="{{ product.product_id }}">
+                                <div class="d-flex align-items-center">
+                                    <button type="submit" name="add_basket" class="btn btn-primary me-2">Add Basket</button>
+                                    <input type="number" class="form-control" name="quantity" style="width: 60px;" value="1" min="1">
+                                </div>
+                            </form>
                         </div>
                     </div>
                 </div>

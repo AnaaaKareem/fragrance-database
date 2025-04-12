@@ -16,24 +16,43 @@
     
                         <!-- Product Information (Right) -->
                         <div class="col-md-9">
-                            <div class="card-body">
-                                <!-- Product Name and Brand -->
-                                <h5 class="card-title">Paco Rabanne - One Million</h5>
-                                <p class="card-text text-muted">Strength: Parfum<br>Size: 100ml</p>
-
-    
-                                <!-- Quantity and Price -->
-                                <div class="d-flex align-items-center">
-                                    <input type="number" class="form-control me-2" style="width: 60px;" value="1" min="1">
-                                    <span class="fw-bold me-2">$99.99</span>
+                            {% for item in items %}
+                                <div class="card-body">
+                                    <h5 class="card-title">{{ item.product.brand }} - {{ item.product.product_name }}</h5>
+                                    {% with personal_fragrance=item.product.personal_fragrance_set.first %}
+                                        {% if personal_fragrance %}
+                                            <p class="card-text text-muted">
+                                                Strength: {{ personal_fragrance.strength }}<br>
+                                                Size: {{ personal_fragrance.size }}
+                                            </p>
+                                        {% else %}
+                                            {% with home_fragrance=item.product.home_fragrances_set.first %}
+                                                {% if home_fragrance %}
+                                                    <p class="card-text text-muted">
+                                                        Type: {{ home_fragrance.product_type }}<br>
+                                                        Bundle: {{ home_fragrance.bundle }}
+                                                    </p>
+                                                {% endif %}
+                                            {% endwith %}
+                                        {% endif %}
+                                    {% endwith %}
+                                    <!-- Quantity and Price -->
+                                    <div class="d-flex align-items-center">
+                                        <input type="number" class="form-control me-2" style="width: 60px;"
+                                               value="{{ item.quantity }}" min="1">
+                                        <span class="fw-bold me-2">${{ item.product.price }}</span>
+                                    </div>
+                                    <!-- Delete Button -->
+                                    <form action="{% url 'delete_from_basket' item.product.product_id %}" method="post">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-danger btn-sm mt-2">Delete</button>
+                                    </form>
                                 </div>
-    
-                                <!-- Delete Button -->
-                                <button class="btn btn-danger btn-sm mt-2">Delete</button>
-                            </div>
+                            {% endfor %}
                         </div>
                     </div>
                 </div>
+
             </div>
     
             <!-- Order Summary (Right Side) -->
@@ -41,11 +60,11 @@
                 <div class="card mb-3">
                     <div class="card-body">
                         <h3 class="card-title">Order Summary</h3>
-                        <h4 class="card-text">Price: $99.99</h4>
-                        <h5 class="card-text">Discount (10%): $9.99</h5>
-                        <h5 class="card-text">Total: $89.99</h5>
+                        <h4 class="card-text">Price: ${{ subtotal }}</h4>
+                        <h5 class="card-text">Discount ({{ discount_rate }}%): ${{ discount }}</h5>
+                        <h5 class="card-text">Total: ${{ total }}</h5>
                         <hr>
-                        <a href="checkout.html" class="btn btn-primary w-100">Checkout</a>
+                        <a href="" class="btn btn-primary w-100">Checkout</a>
                     </div>
                 </div>
             </div>
