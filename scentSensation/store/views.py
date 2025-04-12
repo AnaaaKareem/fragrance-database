@@ -77,17 +77,46 @@ def signup(request):
 
     return render(request, 'store/signup.html', {'form': form})
 
+
+from django.contrib.auth.hashers import check_password
+from django.shortcuts import render, redirect
+from django.contrib import messages
+from .models import Customer
+
+
 def signin(request):
     if request.method == 'POST':
         email = request.POST.get('username')
         password = request.POST.get('password')
         try:
             customer = Customer.objects.get(email_address=email)
-            if check_password(password, customer.password):  # Or use == if plaintext
-                # ✅ Manually start session
+            if check_password(password, customer.password):
+                # Manually start session
                 request.session['customer_id'] = customer.customer_id
-                request.session['first_name'] = f"{customer.first_name}"
-                request.session['last_name'] = f"{customer.last_name}"
+                request.session['first_name'] = customer.first_name
+                request.session['middle_name'] = customer.middle_name
+                request.session['last_name'] = customer.last_name
+                request.session['email_address'] = customer.email_address
+                if customer.DOB:
+                    request.session['DOB'] = customer.DOB.isoformat()
+                request.session['gender'] = customer.gender
+
+                # Get the first address of the customer (if any)
+                address = customer.addresses.first()
+                if address:
+                    request.session['house'] = address.house
+                    request.session['street_name'] = address.street_name
+                    request.session['town_city'] = address.town_city
+                    request.session['county'] = address.county
+                    request.session['postcode'] = address.postcode
+                    request.session['country'] = address.country
+
+                # Get the customer's phone numbers
+                phone_numbers = customer.phonenumbers.all()
+                request.session['phone_numbers'] = [phone.phone_number for phone in
+                                                    phone_numbers] if phone_numbers.exists() else []
+
+                # Redirect to homepage after successful login
                 return redirect('homepage')
             else:
                 messages.error(request, 'Invalid email or password')
@@ -96,11 +125,43 @@ def signin(request):
 
     return render(request, 'store/signin.html')
 
+
 def signout(request):
-    return redirect('store/signin.html')
+    request.session.flush()
+    return redirect('signinAccount')
 
 def account(request):
-    return render(request, 'store/accountInfo.html')
+
+    first_name = request.session.get('first_name')
+    middle_name = request.session.get('middle_name', '')
+    last_name = request.session.get('last_name')
+    email_address = request.session.get('email_address')
+    DOB = request.session.get('DOB')
+    gender = request.session.get('gender')
+    house = request.session.get('house')
+    street_name = request.session.get('street_name')
+    town_city = request.session.get('town_city')
+    county = request.session.get('county')
+    postcode = request.session.get('postcode')
+    country = request.session.get('country')
+    phone_numbers = request.session.get('phone_number', [])
+    context = {
+        'first_name': first_name,
+        'middle_name': middle_name,
+        'last_name': last_name,
+        'email_address': email_address,
+        'DOB': DOB,
+        'gender': gender,
+        'house': house,
+        'street_name': street_name,
+        'town_city': town_city,
+        'county': county,
+        'postcode': postcode,
+        'country': country,
+        'phone_numbers': phone_numbers,
+    }
+
+    return render(request, 'store/accountInfo.html', context)
 
 def store(request):
     products = Products.objects.all()

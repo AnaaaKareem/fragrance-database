@@ -11,7 +11,7 @@ from django.db import models
 class Addresses(models.Model):
     objects = models.Manager()
     address_id = models.AutoField(primary_key=True)
-    customer = models.ForeignKey('Customer', models.DO_NOTHING)
+    customer = models.ForeignKey('Customer', models.DO_NOTHING, related_name='addresses')
     house = models.CharField(max_length=100)
     street_name = models.CharField(max_length=100)
     town_city = models.CharField(max_length=50)
@@ -43,7 +43,7 @@ class Customer(models.Model):
     first_name = models.CharField(max_length=50)
     middle_name = models.CharField(max_length=50)
     last_name = models.CharField(max_length=50)
-    dob = models.DateField(db_column='DOB')  # Field name made lowercase.
+    DOB = models.DateField(db_column='DOB')  # Field name made lowercase.
     gender = models.CharField(max_length=10)
     email_address = models.CharField(max_length=100)
     password = models.CharField(max_length=255)
@@ -199,7 +199,7 @@ class PersonalFragrances(models.Model):
 
 class PhoneNumbers(models.Model):
     objects = models.Manager()
-    customer = models.ForeignKey(Customer, models.DO_NOTHING)
+    customer = models.ForeignKey(Customer, models.DO_NOTHING, related_name='phonenumbers')
     phone_number = models.CharField(primary_key=True, max_length=20)
 
     class Meta:

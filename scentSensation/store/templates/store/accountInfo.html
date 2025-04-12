@@ -1,111 +1,90 @@
-<!doctype html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Account Information</title>
-    <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet">
-    <link href="style.css" rel="stylesheet">
-</head>
-<body>
+{% extends "store/base_2.html" %}
+{% block content %}
+<div class="card w-75 mx-auto">
+    <div class="card-body">
+        <h5 class="card-title text-center">Account Information</h5>
+        <form method="POST" action="">
+            {% csrf_token %}
 
-<main class="container mt-5">
+            <!-- Full Name Section -->
+            <div class="mb-3">
+                <label for="id_first_name" class="form-label">First Name</label>
+                <input type="text" class="form-control" id="first_name" value="{{ first_name }}">
+            </div>
+            <div class="mb-3">
+                <label for="id_middle_name" class="form-label">Middle Name</label>
+                <input type="text" class="form-control" id="middle_name" value="{{ middle_name }}">
+            </div>
+            <div class="mb-3">
+                <label for="id_last_name" class="form-label">Last Name</label>
+                <input type="text" class="form-control" id="last_name" value="{{ last_name }}">
+            </div>
 
-    <div class="card w-75 mx-auto">
-        <div class="card-body">
-            <h5 class="card-title text-center">Account Information</h5>
-            <form id="accountForm">
-                
-                <!-- Full Name Section -->
-                <div class="mb-3">
-                    <label for="fullname" class="form-label">Full Name</label>
-                    <input type="text" class="form-control" id="fullname" value="John Doe">
-                </div>
+            <!-- Email Section -->
+            <div class="mb-3">
+                <label for="id_email_address" class="form-label">Email address</label>
+                <input type="email" class="form-control" id="email" value="{{ email_address }}">
+            </div>
 
-                <!-- Middle Name Section -->
-                <div class="mb-3">
-                    <label for="middlename" class="form-label">Middle Name</label>
-                    <input type="text" class="form-control" id="middlename" value="M">
-                </div>
+            <!-- Date of Birth Section -->
+            <div class="mb-3">
+                <label for="id_DOB" class="form-label">Date of Birth</label>
+                <input type="date" class="form-control" id="DOB" value="{{ DOB }}">
+            </div>
 
-                <!-- Last Name Section -->
-                <div class="mb-3">
-                    <label for="lastname" class="form-label">Last Name</label>
-                    <input type="text" class="form-control" id="lastname" value="Doe">
-                </div>
+            <!-- Phone Numbers Section -->
+            <div class="mb-3">
+                <label for="id_phone_numbers" class="form-label">Phone Numbers</label>
+                <!-- Display the first phone number -->
+                {% if phone_numbers %}
+                    <div class="input-group mb-2 phone-number-group">
+                        <input type="text" class="form-control" name="existing_phone_number" value="{{ phone_numbers }}" readonly>
+                        <div class="input-group-append">
+                            <button type="submit" class="btn btn-danger btn-sm" name="delete_phone_number" value="{{ phone_numbers.0 }}">Delete</button>
+                        </div>
+                    </div>
+                {% else %}
+                    <p>No phone numbers available.</p>
+                {% endif %}
 
-                <!-- Email Section -->
-                <div class="mb-3">
-                    <label for="email" class="form-label">Email address</label>
-                    <input type="email" class="form-control" id="email" value="john.doe@example.com">
-                </div>
+            <!-- Address Section -->
+            <div class="mb-3">
+                <label for="id_house" class="form-label">House</label>
+                <input type="text" class="form-control" id="house" value="{{ house }}">
+            </div>
+            <div class="mb-3">
+                <label for="id_street_name" class="form-label">Street Name</label>
+                <input type="text" class="form-control" id="street_name" value="{{ street_name }}">
+            </div>
+            <div class="mb-3">
+                <label for="id_town_city" class="form-label">Town/City</label>
+                <input type="text" class="form-control" id="town_city" value="{{ town_city }}">
+            </div>
+            <div class="mb-3">
+                <label for="id_county" class="form-label">County</label>
+                <input type="text" class="form-control" id="county" value="{{ county }}">
+            </div>
+            <div class="mb-3">
+                <label for="id_postcode" class="form-label">Postcode</label>
+                <input type="text" class="form-control" id="postcode" value="{{ postcode }}">
+            </div>
 
-                <!-- Phone Number Section -->
-                <div class="mb-3">
-                    <label for="phone" class="form-label">Phone Number</label>
-                    <input type="tel" class="form-control" id="phone" value="(123) 456-7890">
-                </div>
+            <!-- Country Section -->
+            <div class="mb-3">
+                <label for="id_country" class="form-label">Country</label>
+                <select class="form-select" id="country" value="{{ country }}">
+                    <option value="England" {% if country == 'England' %}selected{% endif %}>England</option>
+                    <option value="Scotland" {% if country == 'Scotland' %}selected{% endif %}>Scotland</option>
+                    <option value="Wales" {% if country == 'Wales' %}selected{% endif %}>Wales</option>
+                    <option value="Northern Ireland" {% if country == 'Northern Ireland' %}selected{% endif %}>Northern Ireland</option>
+                </select>
+            </div>
 
-                <!-- Address Section -->
-                <div class="mb-3">
-                    <label for="address1" class="form-label">Street Address</label>
-                    <input type="text" class="form-control" id="address1" value="1234 Main St">
-                </div>
-
-                <div class="mb-3">
-                    <label for="city" class="form-label">City</label>
-                    <input type="text" class="form-control" id="city" value="City">
-                </div>
-
-                <div class="mb-3">
-                    <label for="postcode" class="form-label">Postcode</label>
-                    <input type="text" class="form-control" id="postcode" value="12345">
-                </div>
-
-                <div class="mb-3">
-                    <label for="country" class="form-label">Country</label>
-                    <select class="form-select" id="country">
-                        <option value="England">England</option>
-                        <option value="Scotland">Scotland</option>
-                        <option value="Wales">Wales</option>
-                        <option value="Northern Ireland">Northern Ireland</option>
-                    </select>
-                </div>
-
-                <!-- Password Section -->
-                <div class="mb-3">
-                    <label for="password" class="form-label">Password</label>
-                    <input type="password" class="form-control" id="password" value="password123">
-                </div>
-
-                <!-- Membership Section -->
-                <div class="mb-3">
-                    <label for="membership" class="form-label">Membership</label>
-                    <select class="form-select" id="membership" onchange="updateRenewalDate()">
-                        <option value="basic">Basic</option>
-                        <option value="premium">Premium</option>
-                        <option value="vip">VIP</option>
-                    </select>
-                </div>
-
-                <!-- Membership Renewal Date (Display only, not editable) -->
-                <div class="mb-3">
-                    <label for="renewalDate" class="form-label">Membership Renewal Date</label>
-                    <p id="renewalDate" class="form-control-plaintext">2026-04-03</p>
-                </div>
-
-                <!-- Save Changes Button -->
-                <div class="d-flex justify-content-center mt-3">
-                    <button type="submit" class="btn btn-primary w-50">Save Changes</button>
-                </div>
-            </form>
-        </div>
+            <!-- Save Changes Button -->
+            <div class="d-flex justify-content-center mt-3">
+                <button type="submit" class="btn btn-primary w-50">Save Changes</button>
+            </div>
+        </form>
     </div>
-
-</main>
-
-<script src="bootstrap/js/bootstrap.bundle.min.js"></script>
-
-</body>
-</html>
+</div>
+{% endblock content %}
