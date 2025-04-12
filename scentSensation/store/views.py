@@ -181,24 +181,21 @@ def basket(request):
     if not customer_id:
         return redirect('signin')
 
-    basket_items = Basket.objects.filter(customer=customer_id).select_related('product')
-    customer = Customer.objects.get(customer_id=customer_id)
-    membership = Membership.objects.filter(customer=customer).first()
-    discount_rate = membership.discount_rate.discount_rate if membership else 0
-
-    subtotal = sum(item.product.price * item.quantity for item in basket_items)
-    discount = subtotal * discount_rate
+    items = Basket.objects.filter(customer_id=customer_id)
+    subtotal = sum(item.product.price * item.quantity for item in items)
+    discount_rate = 0  # Define your discount logic
+    discount = subtotal * (discount_rate / 100)
     total = subtotal - discount
 
     context = {
-        'items': basket_items,
+        'items': items,
         'subtotal': subtotal,
+        'discount_rate': discount_rate,
         'discount': discount,
-        'total': total,
-        'discount_rate': discount_rate * 100  # Convert to percentage
+        'total': total
     }
 
-    return render(request, 'store/basket.html',context)
+    return render(request, 'store/basket.html', context)
 
 
 def delete_from_basket(request, product_id):
@@ -208,4 +205,21 @@ def delete_from_basket(request, product_id):
 
     basket_item = get_object_or_404(Basket, customer_id=customer_id, product_id=product_id)
     basket_item.delete()
+    return redirect('basket')
+
+
+def update_basket(request, product_id):
+    customer_id = request.session.get('customer_id')
+    if not customer_id:
+        return redirect('signin')
+
+    if request.method == 'POST':
+        quantity = int(request.POST.get('quantity', 1))
+        basket_item = Basket.objects.filter(customer_id=customer_id, product_id=product_id).first()
+        if basket_item:
+            if quantity > 0:
+                basket_item.quantity = quantity
+                basket_item.save()
+            else:
+                basket_item.delete()
     return redirect('basket')

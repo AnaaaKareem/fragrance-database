@@ -27,8 +27,8 @@ class Addresses(models.Model):
 class Basket(models.Model):
     objects = models.Manager()
     pk = models.CompositePrimaryKey('customer_id', 'product_id')
-    customer = models.ForeignKey('Customer', models.DO_NOTHING)
-    product = models.ForeignKey('Products', models.DO_NOTHING)
+    customer = models.ForeignKey('Customer', models.DO_NOTHING, related_name='baskets')
+    product = models.ForeignKey('Products', models.DO_NOTHING, related_name='basket_items')
     quantity = models.IntegerField()
 
     class Meta:
@@ -90,7 +90,7 @@ class GiftCards(models.Model):
 
 class HomeFragrances(models.Model):
     objects = models.Manager()
-    product = models.OneToOneField('Products', models.DO_NOTHING, primary_key=True)
+    product = models.OneToOneField('Products', models.DO_NOTHING, primary_key=True, related_name='home_fragrance')
     product_type = models.CharField(max_length=50)
     bundle = models.IntegerField()
 
@@ -184,7 +184,7 @@ class Orders(models.Model):
 class PersonalFragrances(models.Model):
     objects = models.Manager()
     pk = models.CompositePrimaryKey('product_id', 'size')
-    product = models.ForeignKey('Products', models.DO_NOTHING)
+    product = models.ForeignKey('Products', models.DO_NOTHING, related_name='personal_fragrance')
     size = models.CharField(max_length=20)
     fragrance_family = models.CharField(max_length=50)
     gender = models.CharField(max_length=10)
@@ -222,8 +222,8 @@ class Places(models.Model):
 
 class ProductImages(models.Model):
     objects = models.Manager()
-    image_id = models.AutoField(primary_key=True)
-    product = models.ForeignKey('Products', models.DO_NOTHING)
+    image_id = models.AutoField(primary_key=True, )
+    product = models.ForeignKey('Products', models.DO_NOTHING, related_name='product_images')
     image = models.TextField()
 
     class Meta:

@@ -7,54 +7,44 @@
         <div class="row">
             <!-- Product List (Left Side) -->
             <div class="col-md-8">
-                <div class="card mb-3">
-                    <div class="row g-0">
-                        <!-- Product Image (Left) -->
-                        <div class="col-md-3 d-flex align-items-center justify-content-center">
-                            <img src="" alt="Product Image" class="img-fluid" style="max-width: 100px;">
-                        </div>
-    
-                        <!-- Product Information (Right) -->
-                        <div class="col-md-9">
-                            {% for item in items %}
-                                <div class="card-body">
-                                    <h5 class="card-title">{{ item.product.brand }} - {{ item.product.product_name }}</h5>
-                                    {% with personal_fragrance=item.product.personal_fragrance_set.first %}
-                                        {% if personal_fragrance %}
-                                            <p class="card-text text-muted">
-                                                Strength: {{ personal_fragrance.strength }}<br>
-                                                Size: {{ personal_fragrance.size }}
-                                            </p>
-                                        {% else %}
-                                            {% with home_fragrance=item.product.home_fragrances_set.first %}
-                                                {% if home_fragrance %}
-                                                    <p class="card-text text-muted">
-                                                        Type: {{ home_fragrance.product_type }}<br>
-                                                        Bundle: {{ home_fragrance.bundle }}
-                                                    </p>
-                                                {% endif %}
-                                            {% endwith %}
-                                        {% endif %}
-                                    {% endwith %}
-                                    <!-- Quantity and Price -->
-                                    <div class="d-flex align-items-center">
-                                        <input type="number" class="form-control me-2" style="width: 60px;"
-                                               value="{{ item.quantity }}" min="1">
-                                        <span class="fw-bold me-2">${{ item.product.price }}</span>
-                                    </div>
-                                    <!-- Delete Button -->
-                                    <form action="{% url 'delete_from_basket' item.product.product_id %}" method="post">
-                                        {% csrf_token %}
-                                        <button type="submit" class="btn btn-danger btn-sm mt-2">Delete</button>
-                                    </form>
+                {% if items %}
+                    {% for item in items %}
+                        <div class="card mb-3">
+                            <div class="row g-0">
+                                <!-- Product Image (Left) -->
+                                <div class="col-md-3 d-flex align-items-center justify-content-center">
+                                    {% if item.product.image %}
+                                        <img src="{{ item.product.image.url }}" alt="{{ item.product.product_name }}" class="img-fluid" style="max-width: 100px;">
+                                    {% endif %}
                                 </div>
-                            {% endfor %}
-                        </div>
-                    </div>
-                </div>
 
+                                <!-- Product Information (Right) -->
+                                <div class="col-md-9">
+                                    <div class="card-body">
+                                        <h5 class="card-title">{{ item.product.brand }} - {{ item.product.product_name }}</h5>
+                                        <!-- Quantity and Price -->
+                                        <div class="d-flex align-items-center">
+                                            <input type="number" class="form-control me-2" style="width: 60px;"
+                                                   value="{{ item.quantity }}" min="1">
+                                            <span class="fw-bold me-2">${{ item.product.price }}</span>
+                                        </div>
+                                        <!-- Delete Button -->
+                                        <form action="{% url 'delete_from_basket' item.product.product_id %}" method="post">
+                                            {% csrf_token %}
+                                            <button type="submit" class="btn btn-danger btn-sm mt-2">Delete</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="alert alert-info" role="alert">
+                        No Fragrances in Basket At The Moment.
+                    </div>
+                {% endif %}
             </div>
-    
+
             <!-- Order Summary (Right Side) -->
             <div class="col-md-4">
                 <div class="card mb-3">
@@ -70,7 +60,6 @@
             </div>
         </div>
     </div>
-    
 
     <br>
 
