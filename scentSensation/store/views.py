@@ -1,5 +1,6 @@
-from django.contrib.auth import authenticate, login
-from django.contrib.auth.hashers import make_password
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.models import AnonymousUser
+from django.contrib.auth.hashers import make_password, check_password
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from .models import *
@@ -65,6 +66,10 @@ def signup(request):
                     connection.commit()
                     messages.success(request, "User registered successfully!")
                     return redirect(home)
+            except pymysql.MySQLError as e:
+                connection.rollback()
+                messages.error(request, f"Database error: {e}")
+                return redirect('signup')
             finally:
                 connection.close()
     else:
@@ -73,7 +78,26 @@ def signup(request):
     return render(request, 'store/signup.html', {'form': form})
 
 def signin(request):
+    if request.method == 'POST':
+        email = request.POST.get('username')
+        password = request.POST.get('password')
+
+        try:
+            customer = Customer.objects.get(email_address=email)
+            if check_password(password, customer.password):  # Or use == if plaintext
+                # ✅ Manually start session
+                request.session['customer_id'] = customer.customer_id
+                request.session['customer_name'] = f"{customer.first_name} {customer.last_name}"
+                return redirect('homepage')
+            else:
+                messages.error(request, 'Invalid email or password')
+        except Customer.DoesNotExist:
+            messages.error(request, 'Invalid email or password')
+
     return render(request, 'store/signin.html')
+
+def signout(request):
+    return redirect('store/signin.html')
 
 def account(request):
     return render(request, 'store/accountInfo.html')

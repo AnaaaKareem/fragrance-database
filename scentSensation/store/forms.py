@@ -23,7 +23,7 @@ class UserRegistrationForm(UserCreationForm):
     password2 = forms.CharField(label='Confirm Password', widget=forms.PasswordInput)
 
 class UserLoginForm(AuthenticationForm):
-    email_address = forms.CharField(
+    username = forms.CharField(
         max_length=150,
         label="Email Address",
         widget=forms.EmailInput(attrs={'placeholder': 'example@example.com'})
@@ -32,9 +32,3 @@ class UserLoginForm(AuthenticationForm):
         label='Password',
         widget=forms.PasswordInput(attrs={'placeholder': '********'})
     )
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.helper = FormHelper()
-        self.helper.form_method = 'post'
-        self.helper.add_input(Submit('submit', 'Sign In'))

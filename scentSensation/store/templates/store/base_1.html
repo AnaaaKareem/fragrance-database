@@ -74,7 +74,13 @@
                             <a class="nav-link" href="{% url 'signinAccount' %}" data-bs-toggle="tooltip" title="Account">
                                 <div class="d-flex flex-column align-items-center">
                                     <img src="{% static 'store/Pictures/Interaction-Icons/user.png' %}" width="30px" height="30px" style="filter: invert(100%)" alt="Account">
-                                    <span class="fw-bold text-white">Account</span>
+                                    <span class="fw-bold text-white">
+                                        {% if request.session.customer_name %}
+                                        {{ request.session.customer_name }}
+                                        {% else %}
+                                            Account
+                                        {% endif %}
+                                    </span>
                                 </div>
                             </a>
                         </li>
