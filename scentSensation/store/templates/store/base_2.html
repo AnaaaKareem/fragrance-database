@@ -54,22 +54,26 @@
 
 <body>
 <nav class="navbar navbar-expand-lg navbar-dark bg-black">
-    <div class="container-fluid">
-        <!-- Logo -->
-        <div class="position-absolute top-50 start-50 translate-middle" style="top: -50%;">
-            <!-- Title -->
-            <svg viewBox="0 0 980 400" width="400" height="400" class="title">
-                <text id="titleLogo" text-anchor="middle" x="50%" y="70%">SCENT SENSATION</text>
-                <!-- Title animation -->
-                <use xlink:href="#titleLogo" class="titleAnim 1"></use>
-                <use xlink:href="#titleLogo" class="titleAnim 2"></use>
-                <use xlink:href="#titleLogo" class="titleAnim 3"></use>
-                <use xlink:href="#titleLogo" class="titleAnim 4"></use>
-                <use xlink:href="#titleLogo" class="titleAnim 5"></use>
-            </svg>
+    <a href="{% url 'homepage' %}">
+        <div class="container-fluid">
+            <!-- Logo -->
+            <div class="position-absolute top-50 start-50 translate-middle" style="top: -50%;">
+                <!-- Title -->
+                <svg viewBox="0 0 980 400" width="400" height="400" class="title">
+                    <text id="titleLogo" text-anchor="middle" x="50%" y="70%">SCENT SENSATION</text>
+                    <!-- Title animation -->
+                    <use xlink:href="#titleLogo" class="titleAnim 1"></use>
+                    <use xlink:href="#titleLogo" class="titleAnim 2"></use>
+                    <use xlink:href="#titleLogo" class="titleAnim 3"></use>
+                    <use xlink:href="#titleLogo" class="titleAnim 4"></use>
+                    <use xlink:href="#titleLogo" class="titleAnim 5"></use>
+                </svg>
+            </div>
         </div>
-    </div>
+    </a>
 </nav>
+
+<br>
 
 <main>
 

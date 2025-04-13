@@ -1,10 +1,9 @@
-from datetime import timedelta
-
 from django.contrib.auth.hashers import make_password, check_password
 from django.shortcuts import render, redirect, get_object_or_404
 from django.core.paginator import Paginator
+from django.contrib import messages
 from django.utils import timezone
-
+from datetime import timedelta
 from .models import *
 from .forms import *
 import pymysql
@@ -136,73 +135,160 @@ def signout(request):
     request.session.flush()
     return redirect('signinAccount')
 
-
-from django.shortcuts import render, redirect
-from django.contrib import messages
-
-
 def account(request):
-    # Retrieve current session data
-    first_name = request.session.get('first_name')
-    middle_name = request.session.get('middle_name', '')
-    last_name = request.session.get('last_name')
-    email_address = request.session.get('email_address')
-    DOB = request.session.get('DOB')
-    gender = request.session.get('gender')
-    house = request.session.get('house')
-    street_name = request.session.get('street_name')
-    town_city = request.session.get('town_city')
-    county = request.session.get('county')
-    postcode = request.session.get('postcode')
-    country = request.session.get('country')
+    if request.method == 'GET':
+        customer_id = request.session.get('customer_id')
+        try:
+            connection = pymysql.connect(
+                host='localhost',
+                port=3306,
+                user='root',
+                password='Pass0-lap123',
+                db='fragrance_schema',
+                charset='utf8mb4',
+                cursorclass=pymysql.cursors.DictCursor
+            )
+            with connection.cursor() as cursor:
+                cursor.execute("SELECT * FROM customer WHERE customer_id = %s", (customer_id,))
+                customer = cursor.fetchone()
+                if customer:
+                    request.session['first_name'] = customer['first_name']
+                    request.session['middle_name'] = customer['middle_name']
+                    request.session['last_name'] = customer['last_name']
+                    request.session['email_address'] = customer['email_address']
+                    request.session['DOB'] = str(customer['DOB'])
+                    request.session['gender'] = customer['gender']
+
+                cursor.execute("SELECT * FROM addresses WHERE customer_id = %s", (customer_id,))
+                address = cursor.fetchone()
+                if address:
+                    request.session['house'] = address['house']
+                    request.session['street_name'] = address['street_name']
+                    request.session['town_city'] = address['town_city']
+                    request.session['county'] = address['county']
+                    request.session['postcode'] = address['postcode']
+                    request.session['country'] = address['country']
+
+                cursor.execute("SELECT membership_type FROM membership WHERE customer_id = %s", (customer_id,))
+                membership = cursor.fetchone()
+                if membership:
+                    request.session['membership'] = membership['membership_type']
+
+
+        finally:
+            connection.close()
 
     if request.method == 'POST':
-        # Update session data with the submitted form values
-        first_name = request.POST.get('first_name', first_name)
-        middle_name = request.POST.get('middle_name', middle_name)
-        last_name = request.POST.get('last_name', last_name)
-        email_address = request.POST.get('email_address', email_address)
-        DOB = request.POST.get('DOB', DOB)
-        gender = request.POST.get('gender', gender)
-        house = request.POST.get('house', house)
-        street_name = request.POST.get('street_name', street_name)
-        town_city = request.POST.get('town_city', town_city)
-        county = request.POST.get('county', county)
-        postcode = request.POST.get('postcode', postcode)
-        country = request.POST.get('country', country)
+        customer_id = request.session.get('customer_id')
+        form = UserUpdateForm(request.POST)
+        if form.is_valid():
+            data = form.cleaned_data
 
-        # Save updated session data
-        request.session['first_name'] = first_name
-        request.session['middle_name'] = middle_name
-        request.session['last_name'] = last_name
-        request.session['email_address'] = email_address
-        request.session['DOB'] = DOB
-        request.session['gender'] = gender
-        request.session['house'] = house
-        request.session['street_name'] = street_name
-        request.session['town_city'] = town_city
-        request.session['county'] = county
-        request.session['postcode'] = postcode
-        request.session['country'] = country
+            try:
+                connection = pymysql.connect(
+                    host='localhost',
+                    port=3306,
+                    user='root',
+                    password='Pass0-lap123',
+                    db='fragrance_schema',
+                    charset='utf8mb4',
+                    cursorclass=pymysql.cursors.DictCursor
+                )
+                with connection.cursor() as cursor:
+                    # --- Customer fields ---
+                    if data.get('first_name'):
+                        cursor.execute("UPDATE customer SET first_name = %s WHERE customer_id = %s",
+                                       (data['first_name'], customer_id))
 
-        # Show success message
-        messages.success(request, "Your account information has been updated successfully.")
+                    if data.get('middle_name'):
+                        cursor.execute("UPDATE customer SET middle_name = %s WHERE customer_id = %s",
+                                       (data['middle_name'], customer_id))
 
-        return redirect('account')  # Redirect to the same page after successful update
+                    if data.get('last_name'):
+                        cursor.execute("UPDATE customer SET last_name = %s WHERE customer_id = %s",
+                                       (data['last_name'], customer_id))
+
+                    if data.get('DOB'):
+                        cursor.execute("UPDATE customer SET DOB = %s WHERE customer_id = %s",
+                                       (data['DOB'], customer_id))
+
+                    if data.get('email_address'):
+                        cursor.execute("UPDATE customer SET email_address = %s WHERE customer_id = %s",
+                                       (data['email_address'], customer_id))
+
+                    if data.get('password'):
+                        cursor.execute("UPDATE customer SET password = %s WHERE customer_id = %s",
+                                       (make_password(data['password']), customer_id))
+
+                    if data.get('gender'):
+                        cursor.execute("UPDATE customer SET gender = %s WHERE customer_id = %s",
+                                       (data['gender'], customer_id))
+
+                    # --- Phone number ---
+                    if data.get('phone_numbers'):
+                        cursor.execute("""
+                            INSERT INTO phone_numbers (customer_id, phone_number)
+                            VALUES (%s, %s)
+                            ON DUPLICATE KEY UPDATE phone_number = VALUES(phone_number)
+                        """, (customer_id, data['phone_numbers']))
+
+                    # --- Address fields ---
+                    if data.get('house'):
+                        cursor.execute("UPDATE addresses SET house = %s WHERE customer_id = %s",
+                                       (data['house'], customer_id))
+
+                    if data.get('street_name'):
+                        cursor.execute("UPDATE addresses SET street_name = %s WHERE customer_id = %s",
+                                       (data['street_name'], customer_id))
+
+                    if data.get('town_city'):
+                        cursor.execute("UPDATE addresses SET town_city = %s WHERE customer_id = %s",
+                                       (data['town_city'], customer_id))
+
+                    if data.get('county'):
+                        cursor.execute("UPDATE addresses SET county = %s WHERE customer_id = %s",
+                                       (data['county'], customer_id))
+
+                    if data.get('postcode'):
+                        cursor.execute("UPDATE addresses SET postcode = %s WHERE customer_id = %s",
+                                       (data['postcode'], customer_id))
+
+                    if data.get('country'):
+                        cursor.execute("UPDATE addresses SET country = %s WHERE customer_id = %s",
+                                       (data['country'], customer_id))
+
+                    # --- Membership ---
+                    if data.get('membership'):
+                        cursor.execute("""
+                            UPDATE membership 
+                            SET membership_type = %s, end_ren_date = %s
+                            WHERE customer_id = %s
+                        """, (data['membership'], timezone.now() + timedelta(days=30), customer_id))
+
+                    connection.commit()
+                    messages.success(request, "Your account information has been updated.")
+                    return redirect('account')
+
+            except pymysql.MySQLError as e:
+                connection.rollback()
+                messages.error(request, f"Database error: {e}")
+            finally:
+                connection.close()
 
     context = {
-        'first_name': first_name,
-        'middle_name': middle_name,
-        'last_name': last_name,
-        'email_address': email_address,
-        'DOB': DOB,
-        'gender': gender,
-        'house': house,
-        'street_name': street_name,
-        'town_city': town_city,
-        'county': county,
-        'postcode': postcode,
-        'country': country
+        'first_name': request.session.get('first_name'),
+        'middle_name': request.session.get('middle_name', ''),
+        'last_name': request.session.get('last_name'),
+        'email_address': request.session.get('email_address'),
+        'DOB': request.session.get('DOB'),
+        'gender': request.session.get('gender'),
+        'house': request.session.get('house'),
+        'street_name': request.session.get('street_name'),
+        'town_city': request.session.get('town_city'),
+        'county': request.session.get('county'),
+        'postcode': request.session.get('postcode'),
+        'country': request.session.get('country'),
+        'membership': request.session.get('membership')
     }
 
     return render(request, 'store/accountInfo.html', context)
@@ -276,11 +362,12 @@ def basket(request):
 
     # Get membership discount
     discount_rate = 0
-    membership = Membership.objects.filter(customer_id=customer_id).select_related('membership_type').first()
-    if membership and membership.membership_type:
-        discount_rate = membership.membership_type.discount_rate
+    membership = Membership.objects.filter(customer_id=customer_id).first()
+    if membership:
+        discount_obj = DiscountRate.objects.filter(member_type=membership.membership_type.member_type).first()
+        discount_rate = discount_obj.discount_rate
 
-    discount = subtotal * (discount_rate / 100)
+    discount = subtotal * (discount_obj.discount_rate / 100)
     total = subtotal - discount
 
     # Use context to send data

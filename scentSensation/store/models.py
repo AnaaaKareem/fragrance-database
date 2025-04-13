@@ -54,6 +54,7 @@ class Customer(models.Model):
 
 
 class DiscountRate(models.Model):
+    objects = models.Manager()
     member_type = models.CharField(primary_key=True, max_length=50)
     discount_rate = models.FloatField()
 

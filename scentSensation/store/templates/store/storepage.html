@@ -5,7 +5,7 @@
     <div class="row">
         <!-- Left Panel: Filters (Optional) -->
         <div class="col-md-3">
-            <div class="card p-3">
+            <div class="card text-white border-light p-3" style="background-color: #000;">
                 <h4>Filter</h4>
                 <hr>
                 <form method="get">
@@ -31,7 +31,7 @@
             <div class="row">
                 {% for product in products %}
                 <div class="col-md-4 mb-4">
-                    <div class="card">
+                    <div class="card text-white border-light " style="background-color: #000;">
                     {% with product_images=product.product_images.all %}
                         {% if product_images %}
                         <div id="carousel{{ product.product_id }}" class="carousel slide" data-bs-ride="carousel">
@@ -67,14 +67,14 @@
 
                         <div class="card-body">
                             <h5 class="card-title">{{ product.product_name }}</h5>
-                            <h6 class="card-subtitle mb-2 text-muted">{{ product.brand }}</h6>
+                            <h6 class="card-subtitle mb-2">{{ product.brand }}</h6>
                             <p class="card-text">{{ product.description }}</p>
                             <p class="h5">£{{ product.price }}</p>
                             <form method="post">
                                 {% csrf_token %}
                                 <input type="hidden" name="product_id" value="{{ product.product_id }}">
                                 <div class="d-flex align-items-center">
-                                    <button type="submit" name="add_basket" class="btn btn-primary me-2">Add Basket</button>
+                                    <button type="submit" name="add_basket" class="btn btn-outline-light me-2">Add Basket</button>
                                     <input type="number" class="form-control" name="quantity" style="width: 60px;" value="1" min="1">
                                 </div>
                             </form>
@@ -94,15 +94,15 @@
 
     {% for num in page_obj.paginator.page_range %}
         {% if page_obj.number == num %}
-            <a class="btn btn-info mx-1 mb-2" href="?page={{ num }}">{{ num }}</a>
+            <a class="btn btn-dark mx-1 mb-2" href="?page={{ num }}">{{ num }}</a>
         {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
-            <a class="btn btn-outline-info mx-1 mb-2" href="?page={{ num }}">{{ num }}</a>
+            <a class="btn btn-outline-light mx-1 mb-2" href="?page={{ num }}">{{ num }}</a>
         {% endif %}
     {% endfor %}
 
     {% if page_obj.has_next %}
-        <a class="btn btn-outline-info mx-1 mb-2" href="?page={{ page_obj.next_page_number }}">Next</a>
-        <a class="btn btn-outline-info mx-1 mb-2" href="?page={{ page_obj.paginator.num_pages }}">Last</a>
+        <a class="btn btn-outline-light mx-1 mb-2" href="?page={{ page_obj.next_page_number }}">Next</a>
+        <a class="btn btn-outline-light mx-1 mb-2" href="?page={{ page_obj.paginator.num_pages }}">Last</a>
     {% endif %}
 </div>
 {% endif %}

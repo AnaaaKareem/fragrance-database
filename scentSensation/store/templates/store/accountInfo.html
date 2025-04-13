@@ -3,38 +3,38 @@
 <div class="card w-75 mx-auto">
     <div class="card-body">
         <h5 class="card-title text-center">Account Information</h5>
-        <form method="POST" action="">
+        <form method="POST">
             {% csrf_token %}
 
             <!-- Full Name Section -->
             <div class="mb-3">
-                <label for="id_first_name" class="form-label">First Name</label>
-                <input type="text" class="form-control" id="first_name" value="{{ first_name }}">
+                <label for="first_name" class="form-label">First Name</label>
+                <input type="text" class="form-control" name="first_name" value="{{ first_name }}">
             </div>
             <div class="mb-3">
-                <label for="id_middle_name" class="form-label">Middle Name</label>
-                <input type="text" class="form-control" id="middle_name" value="{{ middle_name }}">
+                <label for="middle_name" class="form-label">Middle Name</label>
+                <input type="text" class="form-control" name="middle_name" value="{{ middle_name }}">
             </div>
             <div class="mb-3">
-                <label for="id_last_name" class="form-label">Last Name</label>
-                <input type="text" class="form-control" id="last_name" value="{{ last_name }}">
+                <label for="last_name" class="form-label">Last Name</label>
+                <input type="text" class="form-control" name="last_name" value="{{ last_name }}">
             </div>
 
             <!-- Email Section -->
             <div class="mb-3">
-                <label for="id_email_address" class="form-label">Email address</label>
-                <input type="email" class="form-control" id="email" value="{{ email_address }}">
+                <label for="email_address" class="form-label">Email address</label>
+                <input type="email" class="form-control" name="email" value="{{ email_address }}">
             </div>
 
             <!-- Date of Birth Section -->
             <div class="mb-3">
-                <label for="id_DOB" class="form-label">Date of Birth</label>
-                <input type="date" class="form-control" id="DOB" value="{{ DOB }}">
+                <label for="DOB" class="form-label">Date of Birth</label>
+                <input type="date" class="form-control" name="DOB" value="{{ DOB }}">
             </div>
 
             <!-- Phone Numbers Section -->
             <div class="mb-3">
-                <label for="id_phone_numbers" class="form-label">Phone Numbers</label>
+                <label for="phone_numbers" class="form-label">Phone Numbers</label>
                 <!-- Display the first phone number -->
                 {% if phone_numbers %}
                     <div class="input-group mb-2 phone-number-group">
@@ -49,34 +49,44 @@
 
             <!-- Address Section -->
             <div class="mb-3">
-                <label for="id_house" class="form-label">House</label>
-                <input type="text" class="form-control" id="house" value="{{ house }}">
+                <label for="house" class="form-label">House</label>
+                <input type="text" class="form-control" name="house" value="{{ house }}">
             </div>
             <div class="mb-3">
-                <label for="id_street_name" class="form-label">Street Name</label>
-                <input type="text" class="form-control" id="street_name" value="{{ street_name }}">
+                <label for="street_name" class="form-label">Street Name</label>
+                <input type="text" class="form-control" name="street_name" value="{{ street_name }}">
             </div>
             <div class="mb-3">
-                <label for="id_town_city" class="form-label">Town/City</label>
-                <input type="text" class="form-control" id="town_city" value="{{ town_city }}">
+                <label for="town_city" class="form-label">Town/City</label>
+                <input type="text" class="form-control" name="town_city" value="{{ town_city }}">
             </div>
             <div class="mb-3">
-                <label for="id_county" class="form-label">County</label>
-                <input type="text" class="form-control" id="county" value="{{ county }}">
+                <label for="county" class="form-label">County</label>
+                <input type="text" class="form-control" name="county" value="{{ county }}">
             </div>
             <div class="mb-3">
-                <label for="id_postcode" class="form-label">Postcode</label>
-                <input type="text" class="form-control" id="postcode" value="{{ postcode }}">
+                <label for="postcode" class="form-label">Postcode</label>
+                <input type="text" class="form-control" name="postcode" value="{{ postcode }}">
             </div>
 
             <!-- Country Section -->
             <div class="mb-3">
-                <label for="id_country" class="form-label">Country</label>
-                <select class="form-select" id="country" value="{{ country }}">
+                <label for="country" class="form-label">Country</label>
+                <select class="form-select" name="country" value="{{ country }}">
                     <option value="England" {% if country == 'England' %}selected{% endif %}>England</option>
                     <option value="Scotland" {% if country == 'Scotland' %}selected{% endif %}>Scotland</option>
                     <option value="Wales" {% if country == 'Wales' %}selected{% endif %}>Wales</option>
                     <option value="Northern Ireland" {% if country == 'Northern Ireland' %}selected{% endif %}>Northern Ireland</option>
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <label for="membership" class="form-label">Membership</label>
+                <select class="form-select" name="membership" value="{{ membership }}">
+                    <option value="None" {% if country == 'None' %}selected{% endif %}>None</option>
+                    <option value="Standard" {% if country == 'Standard' %}selected{% endif %}>Standard</option>
+                    <option value="Premium" {% if country == 'Premium' %}selected{% endif %}>Premium</option>
+                    <option value="Student" {% if country == 'Student' %}selected{% endif %}>Student</option>
                 </select>
             </div>
 

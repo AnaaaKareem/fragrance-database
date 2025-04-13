@@ -1,4 +1,5 @@
 {% extends "store/base_1.html" %}
+{% load static %}
 {% block content %}
 
     <!--Opening-->
@@ -6,7 +7,7 @@
         <!--Video background-->
         <div class="opacity-50">
             <video autoplay muted loop id="myVideo" class="img-fluid" alt="Make Perfume Video">
-                <source src="Pictures/Video.mp4" type="video/mp4">
+                <source src="{% static 'store/Pictures/Video.mp4' %}" type="video/mp4">
             </video>
         </div>
         <!--Title and subtitle-->
@@ -55,14 +56,14 @@
         <!--Carousel items-->
         <div class="carousel-inner">
             <div class="carousel-item active" data-bs-interval="3000">
-                <img src="Pictures/Fragrance_paco_rabanne_for_him_BT_C9094-21jlnd8.jpg" width="500px" height="600px" class="d-block w-100" alt="Fragrance Image 1">
+                <img src="{% static 'store/Pictures/Fragrance_paco_rabanne_for_him_BT_C9094-21jlnd8.jpg' %}" width="500px" height="600px" class="d-block w-100" alt="Fragrance Image 1">
                 <div class="carousel-caption d-none d-md-block">
                     <h5>Paco Rabanne</h5>
                     <p>The new champion perfume for him.</p>
                 </div>
             </div>
             <div class="carousel-item" data-bs-interval="3000">
-                <img src="Pictures/desktop-wallpaper-emporio-armani-fragrance-stronger-with-you-homme-teahub-io-perfume.jpg" width="500px" height="600px" class="d-block w-100" alt="Fragrance Image 2">
+                <img src="{% static 'store/Pictures/desktop-wallpaper-emporio-armani-fragrance-stronger-with-you-homme-teahub-io-perfume.jpg' %}" width="500px" height="600px" class="d-block w-100" alt="Fragrance Image 2">
                 <div class="carousel-caption d-none d-md-block">
                     <h5>Giorgio Armani & Emporio Armani</h5>
                     <p>Sales Breaking $100 million in revenue</p>
@@ -95,8 +96,8 @@
         <div class="row flex-lg-row-reverse align-items-center g-5 py-5">
             <!--Image for Fragrances for Him-->
             <div class="col-10 col-sm-8 col-lg-6">
-                <a href="picks.html">
-                    <img src="Pictures/More/Man-Applying-Perfume.jpg" class="d-block mx-lg-auto rounded-5 img-fluid img-thumbnail" alt="For Him Image" width="400px" height="400px" loading="lazy">
+                <a href="{% url 'store' %}">
+                    <img src="{% static 'store/Pictures/More/Man-Applying-Perfume.jpg' %}" class="d-block mx-lg-auto rounded-5 img-fluid img-thumbnail" alt="For Him Image" width="400px" height="400px" loading="lazy">
                 </a>
             </div>
             <!--Text for Fragrances for Him-->
@@ -145,8 +146,8 @@
             </div>
             <!--Image for Fragrances for Her-->
             <div class="col-10 col-sm-8 col-lg-6">
-                <a href="picks.html">
-                    <img id="perfumeImg" src="Pictures/More/Woman-Applying-Perfume.jpg" class="d-block mx-lg-auto rounded-5 img-fluid img-thumbnail" alt="For Her Image" width="400px" height="400px" loading="lazy">
+                <a href="{% url 'store' %}">
+                    <img id="perfumeImg" src="{% static 'store/Pictures/More/Woman-Applying-Perfume.jpg' %}" class="d-block mx-lg-auto rounded-5 img-fluid img-thumbnail" alt="For Her Image" width="400px" height="400px" loading="lazy">
                 </a>
             </div>
         </div>

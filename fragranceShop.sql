@@ -39,8 +39,7 @@ CREATE TABLE IF NOT EXISTS ADDRESSES (
 CREATE TABLE IF NOT EXISTS DISCOUNT_RATE (
     member_type VARCHAR(50) NOT NULL,
     discount_rate REAL NOT NULL,
-    PRIMARY KEY(member_type),
-    CHECK (member_type IN ('Standard', 'Premium', 'Student'))
+    PRIMARY KEY(member_type)
 );
 
 -- Table 5: MEMBERSHIP
@@ -51,7 +50,8 @@ CREATE TABLE IF NOT EXISTS MEMBERSHIP (
     end_ren_date DATE,
     PRIMARY KEY(member_id),
     FOREIGN KEY(customer_id) REFERENCES CUSTOMER(customer_id),
-    FOREIGN KEY(membership_type) REFERENCES DISCOUNT_RATE(member_type)
+    FOREIGN KEY(membership_type) REFERENCES DISCOUNT_RATE(member_type),
+    CHECK (member_type IN ('None', 'Standard', 'Premium', 'Student'))
 );
 
 -- Table 6: GIFT_CARDS
