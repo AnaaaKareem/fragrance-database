@@ -150,7 +150,6 @@ CREATE TABLE IF NOT EXISTS ORDERS (
     order_type VARCHAR(50) NOT NULL,
     payment_method VARCHAR(50) NOT NULL,
     installment BOOLEAN NOT NULL,
-    total_payment REAL NOT NULL,
     PRIMARY KEY(order_id),
     FOREIGN KEY(gift_card_num) REFERENCES GIFT_CARDS(gift_card_num),
     CHECK (order_type IN ('Delivery', 'Pickup')),
@@ -160,12 +159,11 @@ CREATE TABLE IF NOT EXISTS ORDERS (
 -- Table 15: ORDER ITEMS
 CREATE TABLE IF NOT EXISTS ORDER_ITEMS (
     order_id INT NOT NULL,
-    product_selected INT NOT NULL,
+    product_id INT NOT NULL,
     quantity INT NOT NULL DEFAULT 1,
-    price DECIMAL(10,2) NOT NULL,
-    PRIMARY KEY (order_id, product_selected),
+    PRIMARY KEY (order_id, product_id),
     FOREIGN KEY (order_id) REFERENCES ORDERS(order_id),
-    FOREIGN KEY (product_selected) REFERENCES PRODUCTS(product_id)
+    FOREIGN KEY (product_id) REFERENCES PRODUCTS(product_id)
 );
 
 -- Table 16: INSTALMENTS
@@ -183,9 +181,9 @@ CREATE TABLE IF NOT EXISTS INSTALMENTS (
 -- Table 17: ORDER REF
 CREATE TABLE IF NOT EXISTS ORDER_REF (
     order_id INT NOT NULL,
-    product_selected INT NOT NULL,
-    PRIMARY KEY (order_id, product_selected),
-    FOREIGN KEY (product_selected) REFERENCES PRODUCTS(product_id),
+    product_id INT NOT NULL,
+    PRIMARY KEY (order_id, product_id),
+    FOREIGN KEY (product_id) REFERENCES PRODUCTS(product_id),
     FOREIGN KEY (order_id) REFERENCES ORDER_ITEMS(order_id)
 );
 
