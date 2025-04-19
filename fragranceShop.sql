@@ -51,7 +51,7 @@ CREATE TABLE IF NOT EXISTS MEMBERSHIP (
     PRIMARY KEY(member_id),
     FOREIGN KEY(customer_id) REFERENCES CUSTOMER(customer_id),
     FOREIGN KEY(membership_type) REFERENCES DISCOUNT_RATE(member_type),
-    CHECK (member_type IN ('None', 'Standard', 'Premium', 'Student'))
+    CHECK (membership_type IN ('None', 'Standard', 'Premium', 'Student'))
 );
 
 -- Table 6: GIFT_CARDS
